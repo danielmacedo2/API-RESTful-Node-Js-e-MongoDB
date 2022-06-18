@@ -11,7 +11,13 @@ app.use({
 app.use(express.json())
 
 // Initial Route / endpoint
+app.get('/', (req, res) => {
 
+    // show req
+
+    res.json({message: "Express método GET working"})
+
+})
 
 // Port
 app.listen(3000)
