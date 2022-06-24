@@ -1,45 +1,27 @@
 // initial config
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-require("dotenv").config();
-
-const Person = require('./models/Person')
 
 // Read Form JSON / middlewares
 
+app.use(
+  express.urlencoded({
+    extended: true,
+  }),
+)
+
+
 app.use(express.json());
 
+
 // API Routes
-app.post('/person', async (req, res) => {
+const personRoutes = require('./routes/personRoutes')
 
-  // req.body
-  const {name, salary, email, approved} = req.body
-
-  if(!name) {
-    return res.status(422).json({error: 'O nome é obrigatório!'})
-  }
-  if(!email) {
-     return res.status(422).json({error: 'O email é obrigatório!'})
-  }
+app.use('/person', personRoutes)
 
 
-  const person = {
-    name,
-    salary,
-    email,
-    approved
-  }
-  
-  try {
-    await Person.create(person)
-
-    res.status(201).json({ message: 'Pessoa adicionada no sistema com sucesso!'})
-  } catch (error) {
-    res.status(500).json({error: error})
-  }
-
-})
 // Initial Route / endpoint
 app.get("/", (req, res) => {
   // show req
