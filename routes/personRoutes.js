@@ -3,6 +3,8 @@ const router = require("express").Router();
 
 const Person = require('../models/Person');
 
+// CREATE - Criação de Dados
+
 router.post('/', async (req, res) => {
     // req.body
     const {name, salary, email, approved} = req.body
@@ -31,5 +33,17 @@ router.post('/', async (req, res) => {
     }
   
   })
+
+// READ - Leitura de Dados
+
+router.get('/', async (req, res) => {
+  try{
+    const people = await Person.find()
+
+    res.status(200).json(people)
+  } catch (error) {
+    res.status(500).json({error: error})
+  }
+})
 
 module.exports = router;
