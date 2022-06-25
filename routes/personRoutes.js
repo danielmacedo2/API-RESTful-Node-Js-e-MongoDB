@@ -67,34 +67,51 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-
 // UPDATE - Atualização de Dados(PUT, PATCH)
-router.patch('/:id', async (req, res) => {
-  const id = req.params.id
+router.patch("/:id", async (req, res) => {
+  const id = req.params.id;
 
-  const { name, salary, email, approved } = req.body
+  const { name, salary, email, approved } = req.body;
 
   const person = {
     name,
-    salary, 
+    salary,
     email,
     approved,
-  }
+  };
 
-  try{
+  try {
+    const updatedPerson = await Person.updateOne({ _id: id }, person);
 
-    const updatedPerson = await Person.updateOne({ _id: id}, person)
-
-    if(updatedPerson.matchedCount === 0) {
-      return res.status(422).json({message: "Usuário não encontrado"})
+    if (updatedPerson.matchedCount === 0) {
+      return res.status(422).json({ message: "Usuário não encontrado" });
     }
 
-    res.status(200).json({ message: 'Usuário atualizado com sucesso!'})
-
+    res.status(200).json({ message: "Usuário atualizado com sucesso!" });
   } catch (error) {
-    res.status(500).json({error: error})
+    res.status(500).json({ error: error });
   }
-})
+});
 
+// DELETE - Remoção de dados
+
+router.delete("/:id", async (req, res) => {
+  const id = req.params.id;
+
+  const person = await Person.findOne({ _id: id });
+
+  if (!person) {
+    return res.status(422).json({ message: "Usuário não encontrado!" });
+  }
+
+  try {
+    await Person.deleteOne({ _id: id})
+    
+    return res.status(200).json({message: "Usuário removido com sucesso!"})
+    
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
 
 module.exports = router;
